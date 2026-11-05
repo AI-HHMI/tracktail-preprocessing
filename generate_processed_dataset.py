@@ -222,7 +222,7 @@ def generate_dex_ycb(dataset_path, out_prefix,
                      dataset_name = 'dex_ycb', 
                      random_state = 3): 
     ''' 
-    generate prepocessed dex ycb dataset
+    generates the preprocessed dex ycb dataset
 
     train: None
     val: None
@@ -252,7 +252,7 @@ def generate_kubric_multiview(dataset_path, out_prefix,
                               dataset_name = 'kubric-multiview', 
                               random_state = 3, debug = False):
     ''' 
-    generate prepocessed dex ycb dataset
+    generates the preprocessed kubric multiview dataset
 
     train: 5000 videos * 24 frames = 120000 frames
     val: 2 videos * 24 frames = 48 frames
@@ -322,7 +322,7 @@ def generate_point_odyssey(dataset_path, out_prefix, dataset_name = 'point-odyss
 def generate_point_odyssey_animal(dataset_path, out_prefix, dataset_name = 'point-odyssey-animal',
                                   random_state = 3, debug = False):
     '''
-    generates the preprocessed point odyssey multiview dataset
+    generates the preprocessed point odyssey multiview animal dataset
 
     train: many sessions * T frames
     val: 1 session (flat split, no subdirectory)

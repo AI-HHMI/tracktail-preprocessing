@@ -225,7 +225,7 @@ def generate_sober_bird(dataset_path, out_prefix,
                          random_state = 3, debug = False):
 
     ''' 
-    generates the preprocessed anipose fly dataset
+    generates the preprocessed sober zebra finch dataset
     '''
 
     print(f'\ngenerating {dataset_name}...')
@@ -383,7 +383,7 @@ def generate_voigts_mouse(dataset_path, out_prefix,
                          random_state = 3, debug = False):
 
     ''' 
-    generates the preprocessed jarvis monkey dataset
+    generates the preprocessed voigts mouse dataset
     '''
 
     print(f'\ngenerating {dataset_name}...')
@@ -465,7 +465,7 @@ def generate_dex_ycb(dataset_path, out_prefix,
                      dataset_name = 'dex_ycb', 
                      random_state = 3): 
     ''' 
-    generate prepocessed dex ycb dataset
+    generates the preprocessed dex ycb dataset
 
     train: None
     val: None
@@ -495,7 +495,7 @@ def generate_kubric_multiview(dataset_path, out_prefix,
                               dataset_name = 'kubric-multiview', 
                               random_state = 3, debug = False):
     ''' 
-    generate prepocessed dex ycb dataset
+    generates the preprocessed kubric multiview dataset
 
     train: 5000 videos * 24 frames = 120000 frames
     val: 2 videos * 24 frames = 48 frames
