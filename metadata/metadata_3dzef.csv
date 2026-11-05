@@ -1,0 +1,5 @@
+id,session,subject,trial,n_cameras,n_frames,total_frames,split,include
+ZebraFish-01,ZebraFish-01,ZebraFish-01,1,2,7188,14376,train,True
+ZebraFish-02,ZebraFish-02,ZebraFish-02,1,2,900,1800,train,True
+ZebraFish-03,ZebraFish-03,ZebraFish-03,1,2,1800,3600,train,True
+ZebraFish-04,ZebraFish-04,ZebraFish-04,1,2,910,1820,val+test,True

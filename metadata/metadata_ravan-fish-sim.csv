@@ -1,0 +1,11 @@
+id,video_name,split,n_subjects,n_keyframes,include
+zebrafish_000000,zebrafish_000000,train,20,299,True
+zebrafish_000001,zebrafish_000001,train,20,299,True
+zebrafish_000002,zebrafish_000002,train,20,299,True
+zebrafish_000003,zebrafish_000003,train,20,299,True
+zebrafish_000004,zebrafish_000004,train,20,299,True
+zebrafish_000005,zebrafish_000005,train,20,299,True
+zebrafish_000006,zebrafish_000006,train,20,299,True
+zebrafish_000007,zebrafish_000007,train,20,299,True
+zebrafish_000008,zebrafish_000008,train,20,299,True
+zebrafish_000009,zebrafish_000009,val+test,20,299,True

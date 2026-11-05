@@ -1,0 +1,8 @@
+id,session,subject,trial,recording_idx,bout_idx,local_start,global_start,n_frames,n_cameras,split,include
+2025_10_12_15_06_46_bout0_f13186-15957,fly_walking,fly_walking,2025_10_12_15_06_46,0,0,13186,13186,2771,7,train,True
+2025_10_12_15_06_46_bout1_f22305-22997,fly_walking,fly_walking,2025_10_12_15_06_46,0,1,22305,22305,692,7,train,True
+2025_10_12_15_06_46_bout2_f43649-44092,fly_walking,fly_walking,2025_10_12_15_06_46,0,2,43649,43649,443,7,train,True
+2025_10_12_15_06_46_bout3_f46583-47605,fly_walking,fly_walking,2025_10_12_15_06_46,0,3,46583,46583,1022,7,train,True
+2025_10_12_15_06_46_bout4_f50267-50722,fly_walking,fly_walking,2025_10_12_15_06_46,0,4,50267,50267,455,7,train,True
+2025_10_12_15_06_46_bout5_f79469-79533,fly_walking,fly_walking,2025_10_12_15_06_46,0,5,79469,79469,64,7,val,True
+2025_10_12_15_06_46_bout5_f79533-80191,fly_walking,fly_walking,2025_10_12_15_06_46,0,5,79533,79533,658,7,test,True
