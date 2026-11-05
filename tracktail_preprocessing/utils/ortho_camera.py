@@ -2,7 +2,7 @@
 
 Johnson-lab fly recordings are calibrated with 11-coefficient DLT files
 (``Cam*_dlt.csv``) whose last three coefficients are zero, i.e. the cameras
-are orthographic. The main ``posetail`` repo only reads the pinhole convention
+are orthographic. The main ``tracktail`` repo only reads the pinhole convention
 (``intrinsic_matrices`` / ``extrinsic_matrices`` / ``distortion_matrices``), so
 this module rewrites each ortho DLT as a "telephoto pinhole" (K, ext) pair that
 approximates the exact ortho projection to within 0.5 px on the recording's GT

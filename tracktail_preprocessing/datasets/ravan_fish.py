@@ -28,8 +28,8 @@ import os
 import numpy as np
 import pandas as pd
 
-from posetail_preprocessing.datasets import BaseDataset
-from posetail_preprocessing.utils import io
+from tracktail_preprocessing.datasets import BaseDataset
+from tracktail_preprocessing.utils import io
 
 
 # 12 keypoints; the source JSON does not name them, so we use generic labels.

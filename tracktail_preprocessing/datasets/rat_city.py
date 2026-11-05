@@ -27,8 +27,8 @@ import os
 import numpy as np
 import pandas as pd
 
-from posetail_preprocessing.datasets import BaseDataset
-from posetail_preprocessing.utils import io, despike_pose
+from tracktail_preprocessing.datasets import BaseDataset
+from tracktail_preprocessing.utils import io, despike_pose
 
 
 # 4 keypoints, in the order stored as kp0..kp3 in solution_keypoints.csv.

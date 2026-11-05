@@ -6,8 +6,8 @@ One-shot migration: rename legacy metadata.yaml keys to their canonical forms.
   n_frames     -> num_frames (only in the top-level calib dict, not CSV rows)
 
 Usage:
-    python -m posetail_preprocessing.scripts.migrate_metadata_keys <root> [<root2> ...]
-    python -m posetail_preprocessing.scripts.migrate_metadata_keys <root> --dry-run
+    python -m tracktail_preprocessing.scripts.migrate_metadata_keys <root> [<root2> ...]
+    python -m tracktail_preprocessing.scripts.migrate_metadata_keys <root> --dry-run
 """
 import argparse
 import sys

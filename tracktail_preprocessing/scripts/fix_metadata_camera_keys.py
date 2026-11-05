@@ -16,8 +16,8 @@ in metadata.yaml, causing an IndexError at training time. This script removes
 such orphan directories.
 
 Usage:
-    python -m posetail_preprocessing.scripts.fix_metadata_camera_keys <root> [<root2> ...]
-    python -m posetail_preprocessing.scripts.fix_metadata_camera_keys <root> --dry-run
+    python -m tracktail_preprocessing.scripts.fix_metadata_camera_keys <root> [<root2> ...]
+    python -m tracktail_preprocessing.scripts.fix_metadata_camera_keys <root> --dry-run
 """
 import argparse
 import shutil

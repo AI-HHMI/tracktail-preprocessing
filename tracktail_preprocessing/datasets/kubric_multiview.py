@@ -8,8 +8,8 @@ import pandas as pd
 from einops import rearrange, reduce
 from tqdm import tqdm
 
-from posetail_preprocessing.datasets import BaseDataset
-from posetail_preprocessing.utils import io, disassemble_extrinsics
+from tracktail_preprocessing.datasets import BaseDataset
+from tracktail_preprocessing.utils import io, disassemble_extrinsics
 
 
 class KubricMultiviewDataset(BaseDataset): 

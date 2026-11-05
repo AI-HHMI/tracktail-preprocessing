@@ -39,8 +39,8 @@ import pandas as pd
 
 from tqdm import tqdm
 
-from posetail_preprocessing.datasets import BaseDataset
-from posetail_preprocessing.utils import io
+from tracktail_preprocessing.datasets import BaseDataset
+from tracktail_preprocessing.utils import io
 
 
 TRAIN_SEQUENCES = ['ZebraFish-01', 'ZebraFish-02', 'ZebraFish-03']

@@ -11,9 +11,9 @@ import pandas as pd
 from einops import rearrange
 from tqdm import tqdm
 
-from posetail_preprocessing.datasets import BaseDataset
-from posetail_preprocessing.utils import io, assemble_extrinsics, best_movement_window
-from posetail_preprocessing.utils.filtering import mad_filter_coords
+from tracktail_preprocessing.datasets import BaseDataset
+from tracktail_preprocessing.utils import io, assemble_extrinsics, best_movement_window
+from tracktail_preprocessing.utils.filtering import mad_filter_coords
 
 
 class AniposeFlyDataset(BaseDataset):

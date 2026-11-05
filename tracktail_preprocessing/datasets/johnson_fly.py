@@ -24,8 +24,8 @@ from scipy.signal import medfilt
 from scipy.ndimage import median_filter
 from tqdm import tqdm
 
-from posetail_preprocessing.datasets import BaseDataset
-from posetail_preprocessing.utils import io, build_pinhole_cameras
+from tracktail_preprocessing.datasets import BaseDataset
+from tracktail_preprocessing.utils import io, build_pinhole_cameras
 
 
 # ---------------------------------------------------------------------------

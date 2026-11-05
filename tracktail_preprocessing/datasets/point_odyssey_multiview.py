@@ -10,8 +10,8 @@ import pandas as pd
 from einops import rearrange, reduce
 from tqdm import tqdm
 
-from posetail_preprocessing.datasets import BaseDataset
-from posetail_preprocessing.utils import io
+from tracktail_preprocessing.datasets import BaseDataset
+from tracktail_preprocessing.utils import io
 
 
 def _load_depth(view_path, frame_idx):

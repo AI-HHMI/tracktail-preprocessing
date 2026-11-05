@@ -9,8 +9,8 @@ import pandas as pd
 from itertools import chain
 from tqdm import tqdm
 
-from posetail_preprocessing.datasets import BaseDataset
-from posetail_preprocessing.utils import io, assemble_extrinsics, filter_coords, best_movement_window
+from tracktail_preprocessing.datasets import BaseDataset
+from tracktail_preprocessing.utils import io, assemble_extrinsics, filter_coords, best_movement_window
 
 
 class CMUPanopticDataset(BaseDataset): 

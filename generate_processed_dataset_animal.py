@@ -4,7 +4,7 @@ import os
 import numpy as np 
 import pandas as pd 
 
-from posetail_preprocessing.datasets import (
+from tracktail_preprocessing.datasets import (
     ZefDataset, 
     AcinosetDataset,
     AllenMouseDataset,
@@ -763,7 +763,7 @@ if __name__ == '__main__':
     out_prefix = '/data/animal-datasets-processed/posetail-finetuning-lili'
 
     os.makedirs(out_prefix, exist_ok = True)
-    # kpt_prefix = '/home/ruppk2@hhmi.org/posetail-preprocessing/posetail_preprocessing/keypoints'
+    # kpt_prefix = '/home/ruppk2@hhmi.org/posetail-preprocessing/tracktail_preprocessing/keypoints'
 
     # random state for reproducing which subsets of each
     # dataset are selected 

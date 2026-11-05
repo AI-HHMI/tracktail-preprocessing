@@ -29,8 +29,8 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 
-from posetail_preprocessing.datasets import BaseDataset
-from posetail_preprocessing.utils import io, compute_frame_displacement
+from tracktail_preprocessing.datasets import BaseDataset
+from tracktail_preprocessing.utils import io, compute_frame_displacement
 
 
 # 16 keypoints, in the order stored in each clip's categories[0]['keypoints'].

@@ -10,8 +10,8 @@ import pandas as pd
 from einops import rearrange
 from tqdm import tqdm
 
-from posetail_preprocessing.datasets import BaseDataset
-from posetail_preprocessing.utils import io, assemble_extrinsics
+from tracktail_preprocessing.datasets import BaseDataset
+from tracktail_preprocessing.utils import io, assemble_extrinsics
 
 from aniposelib.cameras import CameraGroup, Camera
 
@@ -27,20 +27,22 @@ def true_basename(fname):
     return basename
 
 def camera_from_path(calib_path):
-    basename = os.path.basename(calib_path)
-    basename, _ = os.path.splitext(basename)
+    basename = true_basename(calib_path)
+    
     tvec = get_mat_from_file(calib_path, 'T')
     # note this has a transposed intrinsics and rotation matrix for some reason
     rvec = cv2.Rodrigues(get_mat_from_file(calib_path, 'R').T)[0]
     mat = get_mat_from_file(calib_path, 'intrinsicMatrix').T
     dist = get_mat_from_file(calib_path, 'distortionCoefficients')
+    dist = np.array(dist).ravel()
+    dist[2:] = 0
     cam = Camera(matrix=mat, rvec=rvec, tvec=tvec, dist=dist, name=basename)
     return cam
 
-class JarvisMonkeyDataset(BaseDataset): 
+class JohnsonMouseDataset(BaseDataset): 
 
     def __init__(self, dataset_path, dataset_outpath, 
-                 dataset_name = 'jarvis-monkey', conf_thresh = 0.2):
+                 dataset_name = 'johnson-mouse', conf_thresh = 0.5):
         super().__init__(dataset_path, dataset_outpath)
 
         self.dataset_name = dataset_name
@@ -97,18 +99,18 @@ class JarvisMonkeyDataset(BaseDataset):
     
     def generate_dataset(self, splits = None): 
 
-        pose_path = os.path.join(self.dataset_path, 'predictions', 'predictions3D',
-                                 'Predictions_3D_20260125-085654', 'data3D.csv')
+        pose_path = os.path.join(self.dataset_path, 'Predictions_3D_20260107-161914', 'data3D.csv')
         pose_dict = self.load_pose3d(pose_path)
 
-        trial = 'Example_Recording'
-        calib_fnames = sorted(glob.glob(os.path.join(self.dataset_path, 'calib_params', '12Cam_Ralph', '*.yaml')))
+        trial = '2024_11_25_13_52_32'
+        # calib_fnames = sorted(glob.glob(os.path.join(self.dataset_path, trial, 'calibration', '*.yaml')))
+        calib_fnames = sorted(glob.glob(os.path.join(self.dataset_path, 'calib', '2024_11_26_17_00_20', '*.yaml')))
         video_fnames = sorted(glob.glob(os.path.join(self.dataset_path, trial, '*.mp4')))
 
         intrinsics, extrinsics, distortions = self.load_calibration(calib_fnames)
         
         splits = ["train", "val", "test"]
-        split_dict = {'train': 0.5, 'test': 0.05}
+        split_dict = {'train': 0.8, 'test': 0.1}
 
         cam_height_dict = {}
         cam_width_dict = {}
@@ -156,7 +158,7 @@ class JarvisMonkeyDataset(BaseDataset):
             pose_dict_subset = self._subset_pose_dict(
                 dict(pose_dict), start_frame = start_frame, n_frames = num_frames)
 
-            outpath = os.path.join(self.dataset_outpath, split, 'Ralph',
+            outpath = os.path.join(self.dataset_outpath, split, 'mouse1',
                                    '{}_ix{}'.format(trial, start_frame))
             
             for cam_video_path in video_fnames:
@@ -171,10 +173,3 @@ class JarvisMonkeyDataset(BaseDataset):
             
             io.save_npz(pose_dict_subset, outpath, fname = 'pose3d')
             io.save_yaml(data = calib_dict, outpath = outpath, fname = 'metadata.yaml')
-
-
-
-
-
-
-

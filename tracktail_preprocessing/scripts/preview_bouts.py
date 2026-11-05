@@ -21,7 +21,7 @@ Two modes:
         <outdir>/index.csv
 
 Run as a module:
-  pixi run python -m posetail_preprocessing.scripts.preview_bouts --by-subject \\
+  pixi run python -m tracktail_preprocessing.scripts.preview_bouts --by-subject \\
       --bouts-per-subject 4 --n-frames 5 --cameras 3
 """
 import argparse
@@ -32,8 +32,8 @@ import cv2
 import numpy as np
 import pandas as pd
 
-from posetail_preprocessing.datasets import AniposeFlyDataset
-from posetail_preprocessing.utils import io, project_points, draw_keypoints, make_montage
+from tracktail_preprocessing.datasets import AniposeFlyDataset
+from tracktail_preprocessing.utils import io, project_points, draw_keypoints, make_montage
 
 
 DEFAULT_DATASET_PATH = '/groups/karashchuk/karashchuklab/animal-datasets/tuthill-fly'

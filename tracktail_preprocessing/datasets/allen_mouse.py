@@ -10,8 +10,8 @@ from einops import rearrange
 from scipy.signal import medfilt as scipy_medfilt
 from tqdm import tqdm
 
-from posetail_preprocessing.datasets import BaseDataset
-from posetail_preprocessing.utils import io, assemble_extrinsics, top_movement_windows, top_windows_across_segments
+from tracktail_preprocessing.datasets import BaseDataset
+from tracktail_preprocessing.utils import io, assemble_extrinsics, top_movement_windows, top_windows_across_segments
 
 import re
 

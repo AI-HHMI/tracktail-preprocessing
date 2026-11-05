@@ -1,8 +1,8 @@
 # Ortho camera preprocessing spec
 
-This document specifies the closed-form construction that `../posetail-preprocessing`
+This document specifies the closed-form construction that `../tracktail-preprocessing`
 should implement to **rewrite each orthographic recording's metadata YAML in
-pinhole shape**. The main `posetail` repo then consumes the YAML through the
+pinhole shape**. The main `tracktail` repo (posetail-next) then consumes the YAML through the
 existing pinhole loader with zero ortho-specific code paths.
 
 ## Goal
