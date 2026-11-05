@@ -163,7 +163,67 @@ def generate_anipose_fly(prefix, out_prefix,
 
     dataset.generate_dataset(splits = splits)
 
-def generate_sober_bird(prefix, out_prefix, 
+
+def generate_anipose_fly_grant(prefix, out_prefix,
+                               dataset_name = 'tuthill-fly-grant',
+                               random_state = 3, debug = False):
+
+    '''
+    generates the preprocessed anipose fly GRANT dataset (grant/11.19.24).
+
+    Unlike the sarah session (many short trials/fly), grant has a FEW LONG
+    videos per fly (3 repeats R1/R2/R3), so each trial contributes one large
+    movement window. 4 flies: Fly 2_0, 2_1, 3_0, 3_1. Hold out Fly 3_1 -- its
+    3 repeats are split trial-level (top movement -> val, next -> test, drop the
+    3rd); train = the other 3 flies (up to 9 bouts).
+    '''
+
+    print(f'\ngenerating {dataset_name}...')
+    # grant lives under the SAME raw 'tuthill-fly' tree as sarah; only the
+    # processed output goes to a separate 'tuthill-fly-grant' folder, so the raw
+    # path must NOT be derived from dataset_name.
+    dataset_path = os.path.join(prefix, 'tuthill-fly')
+    dataset_outpath = os.path.join(out_prefix, dataset_name)
+
+    dataset = AniposeFlyDataset(
+        dataset_path = dataset_path,
+        dataset_outpath = dataset_outpath,
+        dataset_name = dataset_name,
+        error_thresh = 5,         # drop keypoints with reproj error >= this (px)
+        conf_thresh = 0.7,        # drop keypoints with triangulation score < this
+        min_ncams = 2,            # drop keypoints triangulated from < this many cams
+        mad_k = 6.0,              # drop temporal MAD-outlier keypoints (robust stds)
+        min_valid_frac = 0.60,    # gate: min fraction of keypoints surviving cleaning
+        max_reproj_error = None,  # optional reprojection-error gate (px)
+        # restrict to the grant/11.19.24 session (4 flies, few long videos each)
+        subject_glob = 'grant/11.19.24/Fly *',
+        # hold out one fly; its 3 repeats are split (trial-level) into val + test,
+        # train = the other 3 flies
+        holdout_subject = 'grant/11.19.24/Fly 3_1')
+
+    df = dataset.generate_metadata()
+
+    splits = {'train', 'val', 'test'}
+    # grant has only 3 long trials per fly, so budgets are small and per-bout
+    # frame windows are large. Held-out Fly 3_1: top-1 movement trial -> val,
+    # next -> test, 3rd dropped. val/test use DIFFERENT windows (disjoint trials,
+    # re-scored per window in _partition_holdout).
+    split_dict = {'train': None, 'val': 1, 'test': 1}          # bouts per split (None = all)
+    split_frames_dict = {'train': 1000, 'val': 64, 'test': 500}  # frames per bout
+
+    if debug:
+        split_dict = {'train': 2, 'val': 1, 'test': 1}
+        split_frames_dict = {'train': 16, 'val': 8, 'test': 16}
+
+    df = dataset.select_splits(
+        split_dict = split_dict,
+        split_frames_dict = split_frames_dict,
+        random_state = random_state)
+
+    dataset.generate_dataset(splits = splits)
+
+
+def generate_sober_bird(prefix, out_prefix,
                          dataset_name = 'sober-zebrafinch', 
                          random_state = 3, debug = False):
 
@@ -716,6 +776,7 @@ if __name__ == '__main__':
     # finetuning datasets 
     # generate_acinoset(prefix, oust_prefix, kpt_prefix = kpt_prefix, random_state = random_state, debug = debug)
     # generate_anipose_fly(prefix, out_prefix, dataset_name='tuthill-fly', random_state = random_state, debug = debug)
+    # generate_anipose_fly_grant(prefix, out_prefix, random_state = random_state, debug = debug)
     # generate_allen_mouse(prefix, out_prefix, random_state = random_state, debug = debug)
     # generate_chimpact(out_prefix, random_state = random_state, debug = debug)
     # generate_rat_city(out_prefix, random_state = random_state, debug = debug)

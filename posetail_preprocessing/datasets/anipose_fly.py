@@ -245,11 +245,15 @@ class AniposeFlyDataset(BaseDataset):
         Writes ``movement_start_frame``, ``movement_score``, ``valid_kpt_frac``
         and ``mean_reproj_error`` columns onto ``self.metadata`` (mirrors the
         3D-POP ``_score_movement_for_splits`` pattern).
+
+        Columns are initialized only if absent, so this may be called a second
+        time for a subset of splits (e.g. re-scoring holdout test bouts under a
+        different window) without wiping already-scored rows.
         """
-        self.metadata['movement_start_frame'] = 0
-        self.metadata['movement_score'] = 0.0
-        self.metadata['valid_kpt_frac'] = 0.0
-        self.metadata['mean_reproj_error'] = np.nan
+        for col, default in (('movement_start_frame', 0), ('movement_score', 0.0),
+                             ('valid_kpt_frac', 0.0), ('mean_reproj_error', np.nan)):
+            if col not in self.metadata.columns:
+                self.metadata[col] = default
 
         rows = self.metadata[self.metadata['split'].isin(splits)]
 
@@ -367,7 +371,15 @@ class AniposeFlyDataset(BaseDataset):
         scored = bool(score_splits)
         if scored:
             self._score_bouts(score_splits, split_frames_dict)
-            self._apply_quality_filter(score_splits, split_dict = split_dict)
+            # in holdout mode the whole held-out fly is tagged 'val' before being
+            # partitioned into val+test, so the val gate's floor must keep enough
+            # bouts for BOTH splits (else the test partition can come up empty).
+            gate_dict = split_dict
+            if self.holdout_subject is not None and split_dict:
+                gate_dict = dict(split_dict)
+                gate_dict['val'] = ((split_dict.get('val') or 0)
+                                    + (split_dict.get('test') or 0))
+            self._apply_quality_filter(score_splits, split_dict = gate_dict)
 
         if self.holdout_subject is not None:
             self._partition_holdout(split_dict, split_frames_dict, scored)
@@ -390,16 +402,13 @@ class AniposeFlyDataset(BaseDataset):
         ``split_dict['test']`` as test, dropping the remainder. Train (the other
         flies) gets its usual budget applied (None = keep all gate-passers).
 
-        val and test MUST share a frame window: scoring runs once under the val
-        window, so re-labelling bouts to test only stays consistent (same
-        movement_start_frame) when the windows are equal.
+        val and test are disjoint trials, so they may use different frame
+        windows: bouts are first scored/ranked under the val window (to pick
+        the top-movement val vs test trials); if the windows differ, the test
+        trials are then re-scored under the test window below so their extracted
+        window is the best test-length window.
         """
         split_dict = split_dict or {}
-        if split_frames_dict:
-            assert split_frames_dict.get('val') == split_frames_dict.get('test'), (
-                'holdout partition requires equal val/test frame windows '
-                f"(got val={split_frames_dict.get('val')}, "
-                f"test={split_frames_dict.get('test')})")
 
         val_n = split_dict.get('val') or 0
         test_n = split_dict.get('test') or 0
@@ -416,6 +425,13 @@ class AniposeFlyDataset(BaseDataset):
         # val rows are already split=='val'; re-label test, drop the remainder
         self.metadata.loc[test_ix, 'split'] = 'test'
         self.metadata.loc[drop_ix, 'include'] = False
+
+        # val/test may use different windows; the holdout fly was scored under
+        # the val window, so re-score the now-labelled test bouts under the test
+        # window to pick their best test-length movement window.
+        if scored and split_frames_dict and \
+                split_frames_dict.get('val') != split_frames_dict.get('test'):
+            self._score_bouts(['test'], split_frames_dict)
 
         print(f'[anipose_fly] holdout {self.holdout_subject}: '
               f'{len(val_ix)} val + {len(test_ix)} test bouts '
