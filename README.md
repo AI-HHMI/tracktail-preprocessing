@@ -122,9 +122,9 @@ baseline caches and track subsets made by tracktail repo scripts, not by this re
   `DATA/po-animal-sub256-motion/{train,val,test}/<ani*|val>/trial/` (210 / 1 / 10).
 - Notes: the paper's animal test set has 10 of the 12 converted test trials (`ani1` and `ani8`
   were removed from it). `make_subtime.py` is a reimplementation: the July 2026 script that made
-  `po-animal-sub256-motion` was not kept. It reproduces the released train windows
-  (`subtime_start`) and arrays exactly on every trial we checked, and the cleaning output matches
-  the released data bit for bit.
+  `po-animal-sub256-motion` was not kept. It picks the same window (`subtime_start`) as the
+  released data on all 210 train trials, and its arrays, metadata and image links match exactly
+  (checked on 3 trials end to end, through the cleaning step).
 
 ### tapvid3d_adt, tapvid3d_drivetrack, tapvid3d_pstudio (TAPVid-3D)
 
