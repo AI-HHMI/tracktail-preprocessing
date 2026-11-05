@@ -4,6 +4,8 @@ import os
 import numpy as np 
 import pandas as pd 
 
+from tracktail_preprocessing import cli
+from tracktail_preprocessing.cli import KEYPOINTS_DIR
 from tracktail_preprocessing.datasets import (
     ZefDataset, 
     AcinosetDataset,
@@ -40,7 +42,7 @@ def update_subsampling(splits, n_vids = 2, n_frames = 16):
     return splits, split_dict, split_frames_dict
 
 
-def generate_3dzef(prefix, out_prefix, dataset_name = '3dzef',
+def generate_3dzef(dataset_path, out_prefix, dataset_name = '3dzef',
                    random_state = 3, debug = False):
     '''
     generates the preprocessed 3dzef (3DZeF20-pinhole) dataset
@@ -53,7 +55,6 @@ def generate_3dzef(prefix, out_prefix, dataset_name = '3dzef',
     '''
 
     print(f'\ngenerating {dataset_name}...')
-    dataset_path = os.path.join(prefix, '3dzef', '3DZeF20-pinhole')
     dataset_outpath = os.path.join(out_prefix, dataset_name)
 
     dataset = ZefDataset(
@@ -69,7 +70,7 @@ def generate_3dzef(prefix, out_prefix, dataset_name = '3dzef',
     dataset.generate_dataset(splits = splits, debug = debug)
 
 
-def generate_acinoset(prefix, out_prefix, kpt_prefix, 
+def generate_acinoset(dataset_path, out_prefix, 
                       dataset_name = 'acinoset', 
                       random_state = 3, debug = False):
     
@@ -82,9 +83,8 @@ def generate_acinoset(prefix, out_prefix, kpt_prefix,
     '''
 
     print(f'\ngenerating {dataset_name}...')
-    dataset_path = os.path.join(prefix, dataset_name)
     dataset_outpath = os.path.join(out_prefix, dataset_name)
-    keypoints_path = os.path.join(kpt_prefix, f'keypoints_{dataset_name}.yaml')
+    keypoints_path = os.path.join(KEYPOINTS_DIR, f'keypoints_{dataset_name}.yaml')
 
     dataset = AcinosetDataset(
         dataset_path = dataset_path, 
@@ -110,7 +110,7 @@ def generate_acinoset(prefix, out_prefix, kpt_prefix,
     dataset.generate_dataset(splits = splits)
 
 
-def generate_anipose_fly(prefix, out_prefix, 
+def generate_anipose_fly(dataset_path, out_prefix, 
                          dataset_name = 'anipose_fly', 
                          random_state = 3, debug = False):
 
@@ -119,7 +119,6 @@ def generate_anipose_fly(prefix, out_prefix,
     '''
 
     print(f'\ngenerating {dataset_name}...')
-    dataset_path = os.path.join(prefix, dataset_name)
     dataset_outpath = os.path.join(out_prefix, dataset_name)
 
     dataset = AniposeFlyDataset(
@@ -164,7 +163,7 @@ def generate_anipose_fly(prefix, out_prefix,
     dataset.generate_dataset(splits = splits)
 
 
-def generate_anipose_fly_grant(prefix, out_prefix,
+def generate_anipose_fly_grant(dataset_path, out_prefix,
                                dataset_name = 'tuthill-fly-grant',
                                random_state = 3, debug = False):
 
@@ -179,10 +178,8 @@ def generate_anipose_fly_grant(prefix, out_prefix,
     '''
 
     print(f'\ngenerating {dataset_name}...')
-    # grant lives under the SAME raw 'tuthill-fly' tree as sarah; only the
-    # processed output goes to a separate 'tuthill-fly-grant' folder, so the raw
-    # path must NOT be derived from dataset_name.
-    dataset_path = os.path.join(prefix, 'tuthill-fly')
+    # dataset_path is the raw 'tuthill-fly' tree (shared with the sarah session);
+    # only the processed output goes to a separate 'tuthill-fly-grant' folder.
     dataset_outpath = os.path.join(out_prefix, dataset_name)
 
     dataset = AniposeFlyDataset(
@@ -223,7 +220,7 @@ def generate_anipose_fly_grant(prefix, out_prefix,
     dataset.generate_dataset(splits = splits)
 
 
-def generate_sober_bird(prefix, out_prefix,
+def generate_sober_bird(dataset_path, out_prefix,
                          dataset_name = 'sober-zebrafinch', 
                          random_state = 3, debug = False):
 
@@ -232,7 +229,6 @@ def generate_sober_bird(prefix, out_prefix,
     '''
 
     print(f'\ngenerating {dataset_name}...')
-    dataset_path = os.path.join(prefix, dataset_name)
     dataset_outpath = os.path.join(out_prefix, dataset_name)
 
     dataset = SoberBirdDataset(
@@ -258,7 +254,7 @@ def generate_sober_bird(prefix, out_prefix,
 
     dataset.generate_dataset(splits = splits)
 
-def generate_allen_mouse(prefix, out_prefix,
+def generate_allen_mouse(dataset_path, out_prefix,
                          dataset_name = 'allen-mouse',
                          random_state = 3, debug = False):
 
@@ -274,7 +270,6 @@ def generate_allen_mouse(prefix, out_prefix,
     '''
 
     print(f'\ngenerating {dataset_name}...')
-    dataset_path    = os.path.join(prefix, dataset_name)
     dataset_outpath = os.path.join(out_prefix, dataset_name)
 
     dataset = AllenMouseDataset(
@@ -305,7 +300,7 @@ def generate_allen_mouse(prefix, out_prefix,
     dataset.generate_dataset(splits = splits)
 
 
-def generate_johnson_mouse(prefix, out_prefix, 
+def generate_johnson_mouse(dataset_path, out_prefix, 
                          dataset_name = 'johnson-mouse', 
                          random_state = 3, debug = False):
 
@@ -314,7 +309,6 @@ def generate_johnson_mouse(prefix, out_prefix,
     '''
 
     print(f'\ngenerating {dataset_name}...')
-    dataset_path = os.path.join(prefix, dataset_name)
     dataset_outpath = os.path.join(out_prefix, dataset_name)
 
     dataset = JohnsonMouseDataset(
@@ -325,7 +319,7 @@ def generate_johnson_mouse(prefix, out_prefix,
 
     dataset.generate_dataset()    
 
-def generate_johnson_fly(out_prefix, dataset_name = 'johnson-fly',
+def generate_johnson_fly(dataset_path, out_prefix, dataset_name = 'johnson-fly',
                          random_state = 3, debug = False):
 
     '''
@@ -334,15 +328,17 @@ def generate_johnson_fly(out_prefix, dataset_name = 'johnson-fly',
     Orthographic 7-camera rig. Bouts are detected from the predictor output,
     cropped (first/last 300 frames dropped), and split: every cropped bout
     except the last -> train (all frames); last bout -> val (first 64 frames)
-    + test (remainder). Paths are absolute, so no `prefix` is needed.
+    + test (remainder). ``dataset_path`` is the root that holds
+    ``fly50_predictions_Jan23/`` and ``FlyData/`` (Janelia-internal recording).
     '''
 
     print(f'\ngenerating {dataset_name}...')
 
+    recording = os.path.join(dataset_path, 'FlyData/fly_walking/2025_10_12_15_06_46')
     data = [{
-        "predictions": "/groups/johnson/johnsonlab/Elliott_Abe/fly50_predictions_Jan23/walking/fly50_pred_Jan23/Predictions_3D_20260124-143752",
-        "recording": "/groups/johnson/johnsonlab/Elliott_Abe/FlyData/fly_walking/2025_10_12_15_06_46",
-        "calibration": "/groups/johnson/johnsonlab/Elliott_Abe/FlyData/fly_walking/2025_10_12_15_06_46/calibration",
+        "predictions": os.path.join(dataset_path, "fly50_predictions_Jan23/walking/fly50_pred_Jan23/Predictions_3D_20260124-143752"),
+        "recording": recording,
+        "calibration": os.path.join(recording, "calibration"),
         "start": 0,
         "number": 86000,
     }]
@@ -363,7 +359,7 @@ def generate_johnson_fly(out_prefix, dataset_name = 'johnson-fly',
     dataset.generate_dataset(splits = {'train', 'val', 'test'})
 
 
-def generate_jarvis_monkey(prefix, out_prefix,
+def generate_jarvis_monkey(dataset_path, out_prefix,
                          dataset_name = 'jarvis-monkey', 
                          random_state = 3, debug = False):
 
@@ -372,7 +368,6 @@ def generate_jarvis_monkey(prefix, out_prefix,
     '''
 
     print(f'\ngenerating {dataset_name}...')
-    dataset_path = os.path.join(prefix, dataset_name)
     dataset_outpath = os.path.join(out_prefix, dataset_name)
 
     dataset = JarvisMonkeyDataset(
@@ -383,7 +378,7 @@ def generate_jarvis_monkey(prefix, out_prefix,
 
     dataset.generate_dataset()    
 
-def generate_voigts_mouse(prefix, out_prefix, 
+def generate_voigts_mouse(dataset_path, out_prefix, 
                          dataset_name = 'voigts-mouse', 
                          random_state = 3, debug = False):
 
@@ -392,7 +387,6 @@ def generate_voigts_mouse(prefix, out_prefix,
     '''
 
     print(f'\ngenerating {dataset_name}...')
-    dataset_path = os.path.join(prefix, dataset_name)
     dataset_outpath = os.path.join(out_prefix, dataset_name)
 
     dataset = VoigtsMouseDataset(
@@ -403,7 +397,7 @@ def generate_voigts_mouse(prefix, out_prefix,
 
     dataset.generate_dataset()    
     
-def generate_cmupanoptic(prefix, out_prefix, kpt_prefix, 
+def generate_cmupanoptic(dataset_path, out_prefix, 
                          dataset_name = 'cmupanoptic', 
                          random_state = 3, debug = False): 
 
@@ -412,14 +406,13 @@ def generate_cmupanoptic(prefix, out_prefix, kpt_prefix,
     '''
 
     print(f'\ngenerating {dataset_name}...')
-    dataset_path = os.path.join(prefix, dataset_name)
     dataset_outpath = os.path.join(out_prefix, dataset_name)
 
     dataset = CMUPanopticDataset(
         dataset_path = dataset_path, 
         dataset_outpath = dataset_outpath, 
         dataset_name = dataset_name, 
-        keypoints_path = kpt_prefix)
+        keypoints_path = KEYPOINTS_DIR)
 
     df = dataset.generate_metadata()
 
@@ -439,7 +432,7 @@ def generate_cmupanoptic(prefix, out_prefix, kpt_prefix,
     dataset.generate_dataset(splits = splits)
 
 
-def generate_cmupanoptic3dgs(prefix, out_prefix, 
+def generate_cmupanoptic3dgs(dataset_path, out_prefix, 
                              dataset_name = 'cmupanoptic_3dgs', 
                              random_state = 3): 
     ''' 
@@ -450,8 +443,6 @@ def generate_cmupanoptic3dgs(prefix, out_prefix,
     test: 6 videos * 150 frames = 900 frames
     '''
     print(f'\ngenerating {dataset_name}...')
-
-    dataset_path = os.path.join(prefix, 'panoptic-multiview')
     dataset_outpath = os.path.join(out_prefix, dataset_name)
 
     dataset = CMUPanopticGSDataset(
@@ -470,7 +461,7 @@ def generate_cmupanoptic3dgs(prefix, out_prefix,
     dataset.generate_dataset(splits = splits)
 
 
-def generate_dex_ycb(prefix, out_prefix, 
+def generate_dex_ycb(dataset_path, out_prefix, 
                      dataset_name = 'dex_ycb', 
                      random_state = 3): 
     ''' 
@@ -482,7 +473,6 @@ def generate_dex_ycb(prefix, out_prefix,
     '''
 
     print(f'\ngenerating {dataset_name}...')
-    dataset_path = os.path.join(prefix, 'dex-ycb-multiview')
     dataset_outpath = os.path.join(out_prefix, dataset_name)
 
     dataset = DexYCBDataset(
@@ -501,7 +491,7 @@ def generate_dex_ycb(prefix, out_prefix,
     dataset.generate_dataset(splits = splits)
 
 
-def generate_kubric_multiview(prefix, out_prefix, 
+def generate_kubric_multiview(dataset_path, out_prefix, 
                               dataset_name = 'kubric-multiview', 
                               random_state = 3, debug = False):
     ''' 
@@ -514,7 +504,6 @@ def generate_kubric_multiview(prefix, out_prefix,
 
     # generate full kubric multiview dataset for pretraining
     print(f'\ngenerating {dataset_name}...')
-    dataset_path = os.path.join(prefix, dataset_name)
     dataset_outpath = os.path.join(out_prefix, dataset_name)
 
     dataset = KubricMultiviewDataset(
@@ -539,7 +528,7 @@ def generate_kubric_multiview(prefix, out_prefix,
     dataset.generate_dataset(splits = splits)
 
 
-def generate_pairr24m(prefix, out_prefix, dataset_name = 'pair-r24m', 
+def generate_pairr24m(dataset_path, out_prefix, dataset_name = 'pair-r24m', 
                       random_state = 3, debug = False):
     ''' 
     generates the preprocessed pairr24m dataset
@@ -549,7 +538,6 @@ def generate_pairr24m(prefix, out_prefix, dataset_name = 'pair-r24m',
     test: 215910 frames
     '''
     print(f'\ngenerating {dataset_name}...')
-    dataset_path = os.path.join(prefix, dataset_name)
     dataset_outpath = os.path.join(out_prefix, dataset_name)
 
     dataset = PairR24MDataset(
@@ -576,7 +564,7 @@ def generate_pairr24m(prefix, out_prefix, dataset_name = 'pair-r24m',
 
 
 
-def generate_3dpop(prefix, out_prefix, dataset_name = '3dpop', 
+def generate_3dpop(dataset_path, out_prefix, dataset_name = '3dpop', 
                    random_state = 3, debug = False): 
     ''' 
     generates the preprocessed 3dpop dataset
@@ -586,7 +574,6 @@ def generate_3dpop(prefix, out_prefix, dataset_name = '3dpop',
     test: 62901 frames
     '''
     print(f'\ngenerating {dataset_name}...')
-    dataset_path = os.path.join(prefix, dataset_name)
     dataset_outpath = os.path.join(out_prefix, dataset_name)
 
     dataset = POPDataset(
@@ -612,7 +599,7 @@ def generate_3dpop(prefix, out_prefix, dataset_name = '3dpop',
     dataset.generate_dataset(splits = splits)
 
 
-def generate_rat7m(prefix, out_prefix, dataset_name = 'rat7m', 
+def generate_rat7m(dataset_path, out_prefix, dataset_name = 'rat7m', 
                    random_state = 3, debug = False): 
 
     ''' 
@@ -624,7 +611,6 @@ def generate_rat7m(prefix, out_prefix, dataset_name = 'rat7m',
     '''
 
     print(f'\ngenerating {dataset_name}...')
-    dataset_path = os.path.join(prefix, dataset_name)
     dataset_outpath = os.path.join(out_prefix, dataset_name)
 
     dataset = Rat7MDataset(
@@ -654,8 +640,7 @@ def generate_rat7m(prefix, out_prefix, dataset_name = 'rat7m',
 
 
 
-def generate_chimpact(out_prefix, dataset_name = 'chimpact',
-                      dataset_path = '/groups/branson/bransonlab/datasets/ChimpACT_release_v1',
+def generate_chimpact(dataset_path, out_prefix, dataset_name='chimpact',
                       random_state = 3, debug = False):
 
     '''
@@ -695,8 +680,7 @@ def generate_chimpact(out_prefix, dataset_name = 'chimpact',
     dataset.generate_dataset(splits = splits)
 
 
-def generate_rat_city(out_prefix, dataset_name='rat-city',
-                      dataset_path='/groups/karashchuk/karashchuklab/animal-datasets/janelia-shared/rat-city/cohort7_20251209_1659',
+def generate_rat_city(dataset_path, out_prefix, dataset_name='rat-city',
                       random_state=3, debug=False):
 
     '''
@@ -724,8 +708,7 @@ def generate_rat_city(out_prefix, dataset_name='rat-city',
     dataset.generate_dataset(splits={'train', 'val', 'test'}, debug=debug)
 
 
-def generate_ravan_fish(out_prefix, dataset_name='ravan-fish-sim',
-                        dataset_path='/misc/public/forLili_fromAniket/dataset_for_Lili_20260511/test_Lili_dense_fish_max_20',
+def generate_ravan_fish(dataset_path, out_prefix, dataset_name='ravan-fish-sim',
                         random_state=3, debug=False):
 
     '''
@@ -755,44 +738,5 @@ def generate_ravan_fish(out_prefix, dataset_name='ravan-fish-sim',
 
 
 if __name__ == '__main__':
-
-    # raw and processed data locations
-    prefix = '/groups/karashchuk/karashchuklab/animal-datasets'
-    # out_prefix = '/groups/karashchuk/karashchuklab/animal-datasets-processed/posetail-finetuning'
-    # prefix = '/data/animal-datasets'
-    out_prefix = '/data/animal-datasets-processed/posetail-finetuning-lili'
-
-    os.makedirs(out_prefix, exist_ok = True)
-    # kpt_prefix = '/home/ruppk2@hhmi.org/posetail-preprocessing/tracktail_preprocessing/keypoints'
-
-    # random state for reproducing which subsets of each
-    # dataset are selected 
-    random_state = 3
-    debug = False # debugs on a small portion of the test and val sets
-
-    # pretraining dataset 
-    # generate_kubric_multiview(prefix, out_prefix, debug = debug)
-
-    # finetuning datasets 
-    # generate_acinoset(prefix, oust_prefix, kpt_prefix = kpt_prefix, random_state = random_state, debug = debug)
-    # generate_anipose_fly(prefix, out_prefix, dataset_name='tuthill-fly', random_state = random_state, debug = debug)
-    # generate_anipose_fly_grant(prefix, out_prefix, random_state = random_state, debug = debug)
-    # generate_allen_mouse(prefix, out_prefix, random_state = random_state, debug = debug)
-    # generate_chimpact(out_prefix, random_state = random_state, debug = debug)
-    # generate_rat_city(out_prefix, random_state = random_state, debug = debug)
-    # generate_ravan_fish(out_prefix, random_state = random_state, debug = debug)
-    # generate_rat7m(prefix, out_prefix, random_state = random_state, debug = debug)
-    # generate_pairr24m(prefix, out_prefix, random_state = random_state, debug = debug)
-    generate_3dpop(prefix, out_prefix, random_state = random_state, debug = debug)
-    #generate_3dzef(prefix, out_prefix, random_state = random_state, debug = debug)
-    # generate_cmupanoptic(prefix, out_prefix, kpt_prefix = kpt_prefix, random_state = random_state, debug = debug)
-    # generate_johnson_mouse(prefix, out_prefix, random_state = random_state, debug = debug)
-    # generate_jarvis_monkey(prefix, out_prefix, random_state = random_state, debug = debug)
-    # generate_johnson_fly(out_prefix, random_state = random_state, debug = debug)
-    # generate_allen_mouse(prefix, out_prefix, random_state = random_state, debug = debug)
-    # generate_voigts_mouse(prefix, out_prefix, random_state = random_state, debug = debug)
-    # generate_sober_bird(prefix, out_prefix, random_state = random_state, debug = debug)
-    
-    # purely test datasets
-    # generate_cmupanoptic3dgs(prefix, out_prefix, random_state = random_state)
-    # generate_dex_ycb(prefix, out_prefix, random_state = random_state) 
+    cli.main(cli.collect_generators(globals()),
+             description='Convert a raw animal dataset into the Tracktail trial layout (finetuning datasets).')

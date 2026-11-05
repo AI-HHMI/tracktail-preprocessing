@@ -36,7 +36,6 @@ from tracktail_preprocessing.datasets import AniposeFlyDataset
 from tracktail_preprocessing.utils import io, project_points, draw_keypoints, make_montage
 
 
-DEFAULT_DATASET_PATH = '/groups/karashchuk/karashchuklab/animal-datasets/tuthill-fly'
 DEFAULT_SPLIT_FRAMES = {'train': 60, 'val': 16, 'test': 16}
 
 
@@ -250,7 +249,7 @@ def _write_index(outdir, index_rows, index_name='index.csv'):
 def main():
     parser = argparse.ArgumentParser(description=__doc__,
                                       formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('--dataset-path', default=DEFAULT_DATASET_PATH)
+    parser.add_argument('--dataset-path', required=True, help='raw tuthill-fly folder')
     parser.add_argument('--dataset-name', default='anipose_fly')
     parser.add_argument('--outdir', default='preview')
     parser.add_argument('--by-subject', action='store_true',

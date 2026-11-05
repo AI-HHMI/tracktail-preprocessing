@@ -4,6 +4,8 @@ import os
 import numpy as np 
 import pandas as pd 
 
+from tracktail_preprocessing import cli
+from tracktail_preprocessing.cli import KEYPOINTS_DIR
 from tracktail_preprocessing.datasets import (
     ZefDataset,
     AcinosetDataset,
@@ -15,7 +17,8 @@ from tracktail_preprocessing.datasets import (
     PointOdysseyMultiviewDataset,
     PairR24MDataset,
     POPDataset,
-    Rat7MDataset
+    Rat7MDataset,
+    TapVid3DDataset
 )
 
 
@@ -32,7 +35,7 @@ def update_subsampling(splits, n_vids = 2, n_frames = 16):
     return splits, split_dict, split_frames_dict
 
 
-def generate_3dzef(prefix, out_prefix, dataset_name = '3dzef', 
+def generate_3dzef(dataset_path, out_prefix, dataset_name = '3dzef', 
                    random_state = 3, debug = False): 
     '''
     generates the preprocessed 3dzef dataset
@@ -43,7 +46,6 @@ def generate_3dzef(prefix, out_prefix, dataset_name = '3dzef',
     '''
 
     print(f'\ngenerating {dataset_name}...')
-    dataset_path = os.path.join(prefix, dataset_name)
     dataset_outpath = os.path.join(out_prefix, dataset_name)
 
     dataset = ZefDataset(
@@ -70,7 +72,7 @@ def generate_3dzef(prefix, out_prefix, dataset_name = '3dzef',
     dataset.generate_dataset(splits = splits)
 
 
-def generate_acinoset(prefix, out_prefix, kpt_prefix, 
+def generate_acinoset(dataset_path, out_prefix, 
                       dataset_name = 'acinoset', 
                       random_state = 3, debug = False):
     
@@ -83,9 +85,8 @@ def generate_acinoset(prefix, out_prefix, kpt_prefix,
     '''
 
     print(f'\ngenerating {dataset_name}...')
-    dataset_path = os.path.join(prefix, dataset_name)
     dataset_outpath = os.path.join(out_prefix, dataset_name)
-    keypoints_path = os.path.join(kpt_prefix, f'keypoints_{dataset_name}.yaml')
+    keypoints_path = os.path.join(KEYPOINTS_DIR, f'keypoints_{dataset_name}.yaml')
 
     dataset = AcinosetDataset(
         dataset_path = dataset_path, 
@@ -114,7 +115,7 @@ def generate_acinoset(prefix, out_prefix, kpt_prefix,
     dataset.generate_dataset(splits = splits)
 
 
-def generate_anipose_fly(prefix, out_prefix, 
+def generate_anipose_fly(dataset_path, out_prefix, 
                          dataset_name = 'anipose_fly', 
                          random_state = 3, debug = False):
 
@@ -123,7 +124,6 @@ def generate_anipose_fly(prefix, out_prefix,
     '''
 
     print(f'\ngenerating {dataset_name}...')
-    dataset_path = os.path.join(prefix, dataset_name)
     dataset_outpath = os.path.join(out_prefix, dataset_name)
 
     dataset = AniposeFlyDataset(
@@ -149,7 +149,7 @@ def generate_anipose_fly(prefix, out_prefix,
     dataset.generate_dataset(splits = splits)
 
 
-def generate_cmupanoptic(prefix, out_prefix, kpt_prefix, 
+def generate_cmupanoptic(dataset_path, out_prefix, 
                          dataset_name = 'cmupanoptic', 
                          random_state = 3, debug = False): 
 
@@ -158,14 +158,13 @@ def generate_cmupanoptic(prefix, out_prefix, kpt_prefix,
     '''
 
     print(f'\ngenerating {dataset_name}...')
-    dataset_path = os.path.join(prefix, dataset_name)
     dataset_outpath = os.path.join(out_prefix, dataset_name)
 
     dataset = CMUPanopticDataset(
         dataset_path = dataset_path,
         dataset_outpath = dataset_outpath,
         dataset_name = dataset_name,
-        keypoints_path = kpt_prefix,
+        keypoints_path = KEYPOINTS_DIR,
         conf_thresh = 0.1,
         filter_kernel_size = 11,
         filter_thresh = None,
@@ -190,7 +189,7 @@ def generate_cmupanoptic(prefix, out_prefix, kpt_prefix,
     dataset.generate_dataset(splits = splits)
 
 
-def generate_cmupanoptic3dgs(prefix, out_prefix, 
+def generate_cmupanoptic3dgs(dataset_path, out_prefix, 
                              dataset_name = 'cmupanoptic_3dgs', 
                              random_state = 3): 
     ''' 
@@ -201,8 +200,6 @@ def generate_cmupanoptic3dgs(prefix, out_prefix,
     test: 6 videos * 150 frames = 900 frames
     '''
     print(f'\ngenerating {dataset_name}...')
-
-    dataset_path = os.path.join(prefix, 'panoptic-multiview')
     dataset_outpath = os.path.join(out_prefix, dataset_name)
 
     dataset = CMUPanopticGSDataset(
@@ -221,7 +218,7 @@ def generate_cmupanoptic3dgs(prefix, out_prefix,
     dataset.generate_dataset(splits = splits)
 
 
-def generate_dex_ycb(prefix, out_prefix, 
+def generate_dex_ycb(dataset_path, out_prefix, 
                      dataset_name = 'dex_ycb', 
                      random_state = 3): 
     ''' 
@@ -233,7 +230,6 @@ def generate_dex_ycb(prefix, out_prefix,
     '''
 
     print(f'\ngenerating {dataset_name}...')
-    dataset_path = os.path.join(prefix, 'dex-ycb-multiview')
     dataset_outpath = os.path.join(out_prefix, dataset_name)
 
     dataset = DexYCBDataset(
@@ -252,7 +248,7 @@ def generate_dex_ycb(prefix, out_prefix,
     dataset.generate_dataset(splits = splits)
 
 
-def generate_kubric_multiview(prefix, out_prefix, 
+def generate_kubric_multiview(dataset_path, out_prefix, 
                               dataset_name = 'kubric-multiview', 
                               random_state = 3, debug = False):
     ''' 
@@ -265,7 +261,6 @@ def generate_kubric_multiview(prefix, out_prefix,
 
     # generate full kubric multiview dataset for pretraining
     print(f'\ngenerating {dataset_name}...')
-    dataset_path = os.path.join(prefix, dataset_name)
     dataset_outpath = os.path.join(out_prefix, dataset_name)
 
     dataset = KubricMultiviewDataset(
@@ -290,7 +285,7 @@ def generate_kubric_multiview(prefix, out_prefix,
     dataset.generate_dataset(splits = splits)
 
 
-def generate_point_odyssey(prefix, out_prefix, dataset_name = 'point-odyssey-human',
+def generate_point_odyssey(dataset_path, out_prefix, dataset_name = 'point-odyssey-human',
                            random_state = 3, debug = False):
     '''
     generates the preprocessed point odyssey multiview dataset
@@ -301,7 +296,6 @@ def generate_point_odyssey(prefix, out_prefix, dataset_name = 'point-odyssey-hum
     '''
 
     print(f'\ngenerating {dataset_name}...')
-    dataset_path = os.path.join(prefix, 'point-odyssey/results')
     dataset_outpath = os.path.join(out_prefix, dataset_name)
 
     dataset = PointOdysseyMultiviewDataset(
@@ -325,7 +319,7 @@ def generate_point_odyssey(prefix, out_prefix, dataset_name = 'point-odyssey-hum
 
     dataset.generate_dataset(splits = splits)
 
-def generate_point_odyssey_animal(prefix, out_prefix, dataset_name = 'point-odyssey-animal',
+def generate_point_odyssey_animal(dataset_path, out_prefix, dataset_name = 'point-odyssey-animal',
                                   random_state = 3, debug = False):
     '''
     generates the preprocessed point odyssey multiview dataset
@@ -336,7 +330,6 @@ def generate_point_odyssey_animal(prefix, out_prefix, dataset_name = 'point-odys
     '''
 
     print(f'\ngenerating {dataset_name}...')
-    dataset_path = os.path.join(prefix, 'point-odyssey/results-animal')
     dataset_outpath = os.path.join(out_prefix, dataset_name)
 
     dataset = PointOdysseyMultiviewDataset(
@@ -361,7 +354,7 @@ def generate_point_odyssey_animal(prefix, out_prefix, dataset_name = 'point-odys
     dataset.generate_dataset(splits = splits)
     
 
-def generate_pairr24m(prefix, out_prefix, dataset_name = 'pair-r24m',
+def generate_pairr24m(dataset_path, out_prefix, dataset_name = 'pair-r24m',
                       random_state = 3, debug = False):
     '''
     generates the preprocessed pairr24m dataset
@@ -371,7 +364,6 @@ def generate_pairr24m(prefix, out_prefix, dataset_name = 'pair-r24m',
     test: 215910 frames
     '''
     print(f'\ngenerating {dataset_name}...')
-    dataset_path = os.path.join(prefix, dataset_name)
     dataset_outpath = os.path.join(out_prefix, dataset_name)
 
     dataset = PairR24MDataset(
@@ -398,7 +390,7 @@ def generate_pairr24m(prefix, out_prefix, dataset_name = 'pair-r24m',
 
 
 
-def generate_3dpop(prefix, out_prefix, dataset_name = '3dpop', 
+def generate_3dpop(dataset_path, out_prefix, dataset_name = '3dpop', 
                    random_state = 3, debug = False): 
     ''' 
     generates the preprocessed 3dpop dataset
@@ -408,7 +400,6 @@ def generate_3dpop(prefix, out_prefix, dataset_name = '3dpop',
     test: 62901 frames
     '''
     print(f'\ngenerating {dataset_name}...')
-    dataset_path = os.path.join(prefix, dataset_name)
     dataset_outpath = os.path.join(out_prefix, dataset_name)
 
     dataset = POPDataset(
@@ -434,7 +425,7 @@ def generate_3dpop(prefix, out_prefix, dataset_name = '3dpop',
     dataset.generate_dataset(splits = splits)
 
 
-def generate_rat7m(prefix, out_prefix, dataset_name = 'rat7m', 
+def generate_rat7m(dataset_path, out_prefix, dataset_name = 'rat7m', 
                    random_state = 3, debug = False): 
 
     ''' 
@@ -446,7 +437,6 @@ def generate_rat7m(prefix, out_prefix, dataset_name = 'rat7m',
     '''
 
     print(f'\ngenerating {dataset_name}...')
-    dataset_path = os.path.join(prefix, dataset_name)
     dataset_outpath = os.path.join(out_prefix, dataset_name)
 
     dataset = Rat7MDataset(
@@ -475,40 +465,33 @@ def generate_rat7m(prefix, out_prefix, dataset_name = 'rat7m',
     dataset.generate_dataset(splits = splits)
 
 
+def _generate_tapvid3d(dataset_path, out_prefix, dataset_name):
+    print(f'\ngenerating {dataset_name}...')
+    dataset = TapVid3DDataset(
+        dataset_path = dataset_path,
+        dataset_outpath = os.path.join(out_prefix, dataset_name),
+        dataset_name = dataset_name)
+    dataset.generate_metadata()
+    dataset.select_splits()
+    dataset.generate_dataset(splits = {'test'})
 
-if __name__ == '__main__': 
 
-    # raw and processed data locations
-    # prefix = '/groups/karashchuk/karashchuklab/animal-datasets'
-    # out_prefix = '/groups/karashchuk/karashchuklab/animal-datasets-processed/posetail-finetuning'
-    # out_prefix = '/data/'
-    # prefix = '/data/animal-datasets'
-    prefix = '/groups/karashchuk/karashchuklab/animal-datasets'
-    out_prefix = '/data/animal-datasets-processed/posetail-finetuning-lili'
+def generate_tapvid3d_adt(dataset_path, out_prefix, dataset_name = 'tapvid3d_adt'):
+    '''TAPVid-3D ADT subset (folder of official per-clip .npz files), test only'''
+    _generate_tapvid3d(dataset_path, out_prefix, dataset_name)
 
-    os.makedirs(out_prefix, exist_ok = True)
-    kpt_prefix = '/home/ruppk2@hhmi.org/posetail-preprocessing/tracktail_preprocessing/keypoints'
 
-    # random state for reproducing which subsets of each
-    # dataset are selected 
-    random_state = 3
-    debug = False # debugs on a small portion of the test and val sets
+def generate_tapvid3d_pstudio(dataset_path, out_prefix, dataset_name = 'tapvid3d_pstudio'):
+    '''TAPVid-3D Panoptic Studio subset (folder of official per-clip .npz files), test only'''
+    _generate_tapvid3d(dataset_path, out_prefix, dataset_name)
 
-    # pretraining dataset 
-    # generate_kubric_multiview(prefix, out_prefix, debug = debug)
 
-    # finetuning datasets 
-    # generate_acinoset(prefix, oust_prefix, kpt_prefix = kpt_prefix, random_state = random_state, debug = debug)
-    # generate_anipose_fly(prefix, out_prefix, random_state = random_state, debug = debug)
-    # generate_rat7m(prefix, out_prefix, random_state = random_state, debug = debug)
-    # generate_pairr24m(prefix, out_prefix, random_state = random_state, debug = debug)
-    # generate_3dpop(prefix, out_prefix, random_state = random_state, debug = debug)
-    # generate_3dzef(prefix, out_prefix, random_state = random_state, debug = debug)
-    # generate_cmupanoptic(prefix, out_prefix, kpt_prefix = kpt_prefix, random_state = random_state, debug = debug)
+def generate_tapvid3d_drivetrack(dataset_path, out_prefix, dataset_name = 'tapvid3d_drivetrack'):
+    '''TAPVid-3D DriveTrack subset (folder of official per-clip .npz files), test only'''
+    _generate_tapvid3d(dataset_path, out_prefix, dataset_name)
 
-    # purely test datasets
-    # generate_cmupanoptic3dgs(prefix, out_prefix, random_state = random_state)
-    # generate_dex_ycb(prefix, out_prefix, random_state = random_state) 
 
-    # generate_point_odyssey(prefix, out_prefix, random_state=random_state)
-    generate_point_odyssey_animal(prefix, out_prefix, random_state=random_state)
+if __name__ == '__main__':
+    cli.main(cli.collect_generators(globals()),
+             description='Convert a raw dataset into the Tracktail trial layout '
+                         '(pretraining, paper evaluation and baseline-comparison datasets).')
