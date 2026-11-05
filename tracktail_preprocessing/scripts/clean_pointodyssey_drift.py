@@ -11,7 +11,7 @@ This is the "track cleaning" step of MV-PO in the Tracktail paper. It produced t
         --datasets point-odyssey-human po-animal-sub256-motion --workers 8
 
 ``--src-prefix`` holds ``<dataset>/<split>/<trial>/trial/{pose3d.npz,metadata.yaml,img}``.
-Design notes: posetail-next ``dev/plans/clean-pointodyssey-drift-artifacts.md``.
+Design notes: tracktail repo, ``dev/plans/clean-pointodyssey-drift-artifacts.md``.
 
 Cleaning rule (whole-trajectory drop):
 

@@ -34,7 +34,7 @@ classifiers = [
 Repository = "https://github.com/AI-HHMI/tracktail-preprocessing"
 
 [tool.setuptools.packages.find]
-include = ["tracktail_preprocessing*", "posetail_preprocessing*"]
+include = ["tracktail_preprocessing*"]
 
 [tool.pixi.workspace]
 channels = ["conda-forge"]

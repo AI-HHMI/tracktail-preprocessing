@@ -1,8 +1,7 @@
 # tracktail-preprocessing
 
 Converters that turn public multi-view 3D tracking datasets into the trial layout read by
-[Tracktail](https://github.com/AI-HHMI/tracktail) (`posetail-next`). Formerly
-`posetail-preprocessing`; `import posetail_preprocessing` still works but warns.
+[Tracktail](https://github.com/AI-HHMI/tracktail).
 
 ## Install
 
@@ -42,7 +41,7 @@ default) is the seed used for all our data. `--help` lists the datasets.
 
 ## Datasets used in the Tracktail paper
 
-The paper's data root (`TRACKTAIL_DATA` in posetail-next) holds these folders. Below, `RAW` is
+The paper's data root (`TRACKTAIL_DATA` in the tracktail repo) holds these folders. Below, `RAW` is
 where you downloaded the raw data and `DATA` is the data root.
 
 > TODO: download links for Multi-view Kubric and Multi-view Point Odyssey (human/animal) — upload in progress.
@@ -51,7 +50,7 @@ where you downloaded the raw data and `DATA` is the data root.
 
 Files other than `metadata.yaml`, `pose3d.npz` and `img/` that you may see in our trial folders
 (`duster-views-*`, `gt-depths`, `pose3d_cached*.npz`, `pose3d_ncam*_512.npz`, ...) are
-baseline caches and track subsets made by posetail-next scripts, not by this repo.
+baseline caches and track subsets made by tracktail repo scripts, not by this repo.
 
 ### kubric-multiview (MV-Kubric)
 
@@ -115,7 +114,7 @@ baseline caches and track subsets made by posetail-next scripts, not by this rep
          --src-prefix STAGE --dst-prefix DATA \
          --datasets point-odyssey-human po-animal-sub256-motion --workers 8
      ```
-  4. **Test track subset** (in posetail-next, not here): `scripts/make_pose3d_512.py` replaces each
+  4. **Test track subset** (in the tracktail repo, not here): `scripts/make_pose3d_512.py` replaces each
      test `pose3d.npz` by a 512-track speed-stratified subset and keeps the full cleaned file as
      `pose3d_full.npz`.
 
@@ -140,7 +139,7 @@ baseline caches and track subsets made by posetail-next scripts, not by this rep
 - Output: `DATA/tapvid3d_<subset>/test/<session>/<clip>/` with one camera `cam0` (identity
   extrinsics, i.e. camera coordinates), `pose` NaN where not visible, and the benchmark's
   `queries_xyt` in `pose3d.npz`. All clips are converted; the paper's evaluation subset is
-  selected in posetail-next (`arrow_baseline/tapvid3d_minival.json`).
+  selected in the tracktail repo (`arrow_baseline/tapvid3d_minival.json`).
 
 ### rat7m (Rat7M, cover figure)
 
